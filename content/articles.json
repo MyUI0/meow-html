@@ -1,0 +1,57 @@
+[
+  {
+    "id": "openwrt-router-setup-guide",
+    "title": "OpenWrt 路由器初始配置指南",
+    "date": "2025-01-15",
+    "updated": "2025-01-20",
+    "cover": "https://picsum.photos/800/400?random=10",
+    "excerpt": "本文详细介绍了 OpenWrt 路由器的初始配置流程，包括网络设置、无线配置、防火墙规则以及常用插件的安装方法，适合刚接触 OpenWrt 的用户参考。",
+    "content": "<h2 id=\"前言\">前言</h2>\n<p>OpenWrt 是一个高度可定制的 Linux 操作系统，专为嵌入式设备设计。本文将带你完成 OpenWrt 路由器的初始配置，让你的路由器发挥最大潜力。</p>\n\n<h2 id=\"准备工作\">准备工作</h2>\n<p>在开始之前，你需要准备以下物品：</p>\n<ul>\n<li>一台已刷入 OpenWrt 固件的路由器</li>\n<li>一台电脑（有线连接推荐）</li>\n<li>网线一根</li>\n</ul>\n\n<h2 id=\"登录管理界面\">登录管理界面</h2>\n<p>将电脑通过网线连接到路由器的 LAN 口，打开浏览器访问 <code>192.168.1.1</code>，使用默认账号密码 <code>root</code> / <code>password</code> 登录。</p>\n\n<blockquote>\n<p><strong>注意：</strong>首次登录后请立即修改默认密码！</p>\n</blockquote>\n\n<h2 id=\"网络配置\">网络配置</h2>\n<p>进入 <strong>网络 → 接口</strong> 页面，你可以看到以下默认接口：</p>\n<ol>\n<li><strong>LAN</strong> - 本地网络接口</li>\n<li><strong>WAN</strong> - 广域网接口</li>\n<li><strong>WWAN</strong> - 无线广域网接口（部分设备）</li>\n</ol>\n\n<h3 id=\"配置-wan-口\">配置 WAN 口</h3>\n<p>根据你的上网方式选择对应的协议：</p>\n<ul>\n<li><strong>PPPoE 拨号</strong> - 输入运营商提供的账号密码</li>\n<li><strong>DHCP 客户端</strong> - 自动获取 IP（光猫桥接模式）</li>\n<li><strong>静态 IP</strong> - 手动配置 IP 地址</li>\n</ul>\n\n<h2 id=\"无线配置\">无线配置</h2>\n<p>进入 <strong>网络 → 无线</strong> 页面，点击「编辑」按钮配置无线网络：</p>\n<ul>\n<li>SSID：设置你的 WiFi 名称</li>\n<li>加密方式：推荐 WPA2-PSK 或 WPA3-SAE</li>\n<li>密码：设置一个安全的 WiFi 密码</li>\n<li>频道：建议选择自动或 5GHz 频段</li>\n</ul>\n\n<h2 id=\"防火墙设置\">防火墙设置</h2>\n<p>OpenWrt 使用 <code>iptables</code> / <code>nftables</code> 作为防火墙。默认配置已经足够安全，但你可以在 <strong>网络 → 防火墙</strong> 中进行自定义：</p>\n\n<pre><code># 查看当前防火墙规则\niptables -L -n\n\n# 允许 SSH 访问\niptables -A INPUT -p tcp --dport 22 -j ACCEPT\n</code></pre>\n\n<h2 id=\"常用插件推荐\">常用插件推荐</h2>\n<p>以下是一些实用的 OpenWrt 插件：</p>\n<table>\n<thead>\n<tr><th>插件名称</th><th>功能说明</th><th>推荐指数</th></tr>\n</thead>\n<tbody>\n<tr><td>LuCI</td><td>Web 管理界面</td><td>⭐⭐⭐⭐⭐</td></tr>\n<tr><td>Passwall</td><td>科学上网工具</td><td>⭐⭐⭐⭐⭐</td></tr>\n<tr><td>SSR Plus</td><td>多协议代理</td><td>⭐⭐⭐⭐</td></tr>\n<tr><td>AdGuard Home</td><td>广告过滤 DNS</td><td>⭐⭐⭐⭐</td></tr>\n<tr><td>UPnP</td><td>端口自动映射</td><td>⭐⭐⭐</td></tr>\n</tbody>\n</table>\n\n<h2 id=\"总结\">总结</h2>\n<p>通过以上步骤，你已经完成了 OpenWrt 路由器的基本配置。OpenWrt 的强大之处在于其高度的可定制性，你可以根据自己的需求安装各种插件和进行高级设置。</p>\n\n<hr>\n<p>如果你在配置过程中遇到任何问题，欢迎在评论区留言讨论！</p>",
+    "categories": ["技术教程", "路由器"],
+    "tags": ["OpenWrt", "路由器", "网络配置", "Linux"]
+  },
+  {
+    "id": "docker-container-management",
+    "title": "Docker 容器管理入门与实践",
+    "date": "2025-02-10",
+    "updated": "2025-02-15",
+    "cover": "https://picsum.photos/800/400?random=11",
+    "excerpt": "Docker 是现代应用部署的核心工具。本文从基础概念讲起，涵盖镜像管理、容器操作、Docker Compose 编排以及实际部署案例。",
+    "content": "<h2 id=\"什么是-docker\">什么是 Docker</h2>\n<p>Docker 是一个开源的容器化平台，它允许开发者将应用及其依赖打包到一个轻量级、可移植的容器中。与虚拟机不同，容器共享主机内核，因此更加轻量和高效。</p>\n\n<h2 id=\"核心概念\">核心概念</h2>\n<ul>\n<li><strong>镜像 (Image)</strong> - 只读模板，包含创建容器所需的所有文件</li>\n<li><strong>容器 (Container)</strong> - 镜像的运行实例</li>\n<li><strong>Dockerfile</strong> - 构建镜像的脚本文件</li>\n<li><strong>Docker Compose</strong> - 多容器编排工具</li>\n</ul>\n\n<h2 id=\"常用命令\">常用命令</h2>\n\n<h3 id=\"镜像操作\">镜像操作</h3>\n<pre><code># 搜索镜像\ndocker search nginx\n\n# 拉取镜像\ndocker pull nginx:latest\n\n# 查看本地镜像\ndocker images\n\n# 删除镜像\ndocker rmi nginx:latest</code></pre>\n\n<h3 id=\"容器操作\">容器操作</h3>\n<pre><code># 运行容器\ndocker run -d --name my-nginx -p 80:80 nginx\n\n# 查看运行中的容器\ndocker ps\n\n# 停止容器\ndocker stop my-nginx\n\n# 删除容器\ndocker rm my-nginx\n\n# 查看容器日志\ndocker logs -f my-nginx</code></pre>\n\n<h2 id=\"dockerfile-编写\">Dockerfile 编写</h2>\n<p>下面是一个 Node.js 应用的 Dockerfile 示例：</p>\n<pre><code>FROM node:18-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install --production\nCOPY . .\nEXPOSE 3000\nCMD [\"node\", \"server.js\"]</code></pre>\n\n<h2 id=\"docker-compose-编排\">Docker Compose 编排</h2>\n<p>使用 Docker Compose 可以轻松管理多容器应用：</p>\n<pre><code>version: '3.8'\nservices:\n  web:\n    build: .\n    ports:\n      - \"3000:3000\"\n    depends_on:\n      - db\n  db:\n    image: mysql:8.0\n    environment:\n      MYSQL_ROOT_PASSWORD: example\n    volumes:\n      - db_data:/var/lib/mysql\nvolumes:\n  db_data:</code></pre>\n\n<h2 id=\"实际部署案例\">实际部署案例</h2>\n<p>以下是一个完整的博客系统部署方案，包含 Nginx 反向代理、Node.js 应用和 MySQL 数据库。</p>\n\n<blockquote>\n<p>生产环境中请务必配置 SSL 证书、设置合理的资源限制，并定期备份数据。</p>\n</blockquote>\n\n<h2 id=\"总结\">总结</h2>\n<p>Docker 大大简化了应用的部署和管理流程。掌握 Docker 的基本操作是每个开发者的必备技能之一。希望本文能帮助你快速上手 Docker！</p>",
+    "categories": ["技术教程", "Docker"],
+    "tags": ["Docker", "容器化", "DevOps", "Linux"]
+  },
+  {
+    "id": "static-blog-building",
+    "title": "使用纯静态 HTML 构建轻量级博客",
+    "date": "2025-03-05",
+    "updated": "2025-03-10",
+    "cover": "https://picsum.photos/800/400?random=12",
+    "excerpt": "在资源受限的环境（如路由器）中，纯静态 HTML 博客是最佳选择。本文介绍了如何从 Hexo 主题转换为纯静态博客，实现零依赖、高性能的个人站点。",
+    "content": "<h2 id=\"为什么选择纯静态博客\">为什么选择纯静态博客</h2>\n<p>在路由器等资源受限的环境中运行博客，传统的动态博客系统（如 WordPress）往往过于沉重。纯静态 HTML 博客具有以下优势：</p>\n<ul>\n<li><strong>零服务端依赖</strong> - 不需要 PHP、数据库或 Node.js</li>\n<li><strong>极小的体积</strong> - 整个站点可以控制在 5MB 以内</li>\n<li><strong>极快的加载速度</strong> - 纯 HTML/CSS/JS，无服务端渲染</li>\n<li><strong>安全性高</strong> - 没有动态脚本，不存在 SQL 注入等风险</li>\n<li><strong>易于部署</strong> - 只需要一个支持静态文件的 HTTP 服务器</li>\n</ul>\n\n<h2 id=\"技术方案\">技术方案</h2>\n<p>我们的方案是将 Hexo 的 Meow 主题转换为纯静态 HTML：</p>\n<ol>\n<li>将 Pug 模板编译为 HTML 页面</li>\n<li>将 Stylus 编译为 CSS</li>\n<li>将文章内容存储在 JSON 文件中</li>\n<li>使用 JavaScript 动态渲染页面内容</li>\n</ol>\n\n<h2 id=\"目录结构\">目录结构</h2>\n<pre><code>static-blog/\n├── index.html          # 首页\n├── post.html           # 文章模板页\n├── archive.html        # 归档页\n├── categories.html     # 分类页\n├── tags.html           # 标签页\n├── 404.html            # 错误页\n├── assets/\n│   ├── css/            # 样式文件\n│   ├── js/             # 脚本文件\n│   ├── svg/            # 图标资源\n│   └── images/         # 图片资源\n└── content/\n    ├── config.json     # 站点配置\n    └── articles.json   # 文章数据</code></pre>\n\n<h2 id=\"内容管理\">内容管理</h2>\n<p>文章以 JSON 格式存储，每篇文章包含标题、日期、分类、标签、正文等字段。新增文章只需编辑 <code>articles.json</code> 文件即可。</p>\n\n<h2 id=\"性能优化\">性能优化</h2>\n<ul>\n<li>移除自定义字体，使用系统字体</li>\n<li>CSS 压缩后仅约 50KB</li>\n<li>JavaScript 模块化加载</li>\n<li>图片使用外部链接，减少本地体积</li>\n<li>支持暗色/亮色模式切换</li>\n</ul>\n\n<h2 id=\"总结\">总结</h2>\n<p>纯静态博客方案非常适合在路由器等嵌入式设备上运行。整个站点体积小、加载快、维护简单，是个人博客的理想选择。</p>",
+    "categories": ["技术教程", "博客"],
+    "tags": ["静态博客", "HTML", "前端", "性能优化"]
+  },
+  {
+    "id": "linux-network-tools",
+    "title": "Linux 常用网络诊断工具详解",
+    "date": "2025-04-20",
+    "updated": "2025-04-22",
+    "cover": "https://picsum.photos/800/400?random=13",
+    "excerpt": "网络问题是日常运维中最常见的挑战之一。本文详细介绍 Linux 系统中常用的网络诊断工具，包括 ping、traceroute、netstat、ss、tcpdump 等。",
+    "content": "<h2 id=\"ping-连通性测试\">ping - 连通性测试</h2>\n<p><code>ping</code> 是最基本的网络诊断工具，用于测试与目标主机的连通性：</p>\n<pre><code># 基本用法\nping www.baidu.com\n\n# 指定发送次数\nping -c 4 www.baidu.com\n\n# 指定间隔时间\nping -i 0.5 www.baidu.com</code></pre>\n\n<h2 id=\"traceroute-路由追踪\">traceroute - 路由追踪</h2>\n<p><code>traceroute</code> 用于显示数据包到达目标主机所经过的路由路径：</p>\n<pre><code>traceroute www.baidu.com\n\n# 使用 ICMP 协议\ntraceroute -I www.baidu.com</code></pre>\n\n<h2 id=\"ss-socket-统计\">ss - Socket 统计</h2>\n<p><code>ss</code> 是 <code>netstat</code> 的现代替代品，速度更快：</p>\n<pre><code># 查看所有 TCP 连接\nss -t -a\n\n# 查看监听端口\nss -t -l\n\n# 查看进程信息\nss -t -l -p\n\n# 统计各状态连接数\nss -s</code></pre>\n\n<h2 id=\"tcpdump-抓包工具\">tcpdump - 抓包工具</h2>\n<p><code>tcpdump</code> 是强大的网络抓包工具：</p>\n<pre><code># 抓取所有流量\ntcpdump -i eth0\n\n# 抓取特定端口\ntcpdump -i eth0 port 80\n\n# 抓取特定主机\ntcpdump -i eth0 host 192.168.1.1\n\n# 保存到文件\ntcpdump -i eth0 -w capture.pcap</code></pre>\n\n<h2 id=\"curl-http-调试\">curl - HTTP 调试</h2>\n<p><code>curl</code> 是调试 HTTP 请求的利器：</p>\n<pre><code># 获取网页内容\ncurl https://www.baidu.com\n\n# 查看响应头\ncurl -I https://www.baidu.com\n\n# POST 请求\ncurl -X POST -d 'data=value' https://example.com/api\n\n# 显示详细过程\ncurl -v https://www.baidu.com</code></pre>\n\n<h2 id=\"总结\">总结</h2>\n<p>熟练掌握这些网络诊断工具，可以帮助你快速定位和解决网络问题。建议在日常工作中多加练习，形成自己的诊断思路。</p>",
+    "categories": ["技术教程", "Linux"],
+    "tags": ["Linux", "网络", "运维", "工具"]
+  },
+  {
+    "id": "home-lab-setup",
+    "title": "我的家庭实验室搭建记录",
+    "date": "2025-05-01",
+    "updated": "2025-05-08",
+    "cover": "https://picsum.photos/800/400?random=14",
+    "excerpt": "记录了搭建家庭实验室的完整过程，包括硬件选型、虚拟化平台部署、服务配置以及自动化运维工具的搭建经验。",
+    "content": "<h2 id=\"硬件选型\">硬件选型</h2>\n<p>搭建家庭实验室，硬件选择是第一步。我最终选择了以下配置：</p>\n<ul>\n<li><strong>主机</strong>：二手 Dell R730 服务器（2x E5-2680 v4, 128GB RAM）</li>\n<li><strong>NAS</strong>：群晖 DS920+（4x 4TB HDD + 2x 1TB SSD 缓存）</li>\n<li><strong>路由器</strong>：刷了 OpenWrt 的 x86 软路由</li>\n<li><strong>UPS</strong>：APC BK650-CH 不间断电源</li>\n</ul>\n\n<h2 id=\"虚拟化平台\">虚拟化平台</h2>\n<p>使用 Proxmox VE 作为虚拟化平台，它基于 Debian，支持 KVM 和 LXC 容器：</p>\n<ol>\n<li>安装 Proxmox VE 系统</li>\n<li>配置网络桥接</li>\n<li>创建虚拟机和容器</li>\n<li>配置存储池</li>\n</ol>\n\n<h2 id=\"核心服务\">核心服务</h2>\n<p>在家庭实验室中运行以下核心服务：</p>\n<table>\n<thead>\n<tr><th>服务</th><th>用途</th><th>部署方式</th></tr>\n</thead>\n<tbody>\n<tr><td>Nginx</td><td>反向代理</td><td>LXC 容器</td></tr>\n<tr><td>AdGuard Home</td><td>DNS 去广告</td><td>LXC 容器</td></tr>\n<tr><td>Portainer</td><td>Docker 管理</td><td>Docker 容器</td></tr>\n<tr><td>Gitea</td><td>代码托管</td><td>Docker 容器</td></tr>\n<tr><td>Uptime Kuma</td><td>服务监控</td><td>Docker 容器</td></tr>\n<tr><td>Home Assistant</td><td>智能家居</td><td>LXC 容器</td></tr>\n</tbody>\n</table>\n\n<h2 id=\"自动化运维\">自动化运维</h2>\n<p>使用 Ansible 进行自动化配置管理：</p>\n<pre><code># playbook.yml\n---\n- hosts: all\n  become: yes\n  tasks:\n    - name: Update system\n      apt:\n        update_cache: yes\n        upgrade: dist\n\n    - name: Install common packages\n      apt:\n        name:\n          - htop\n          - vim\n          - tmux\n          - git\n        state: present</code></pre>\n\n<h2 id=\"心得体会\">心得体会</h2>\n<p>搭建家庭实验室是一个持续学习和实践的过程。通过亲自动手配置各种服务，我对 Linux 系统、网络和虚拟化有了更深入的理解。虽然过程中遇到了不少问题，但解决问题的过程本身就是最好的学习。</p>\n\n<blockquote>\n<p>「纸上得来终觉浅，绝知此事要躬行。」—— 陆游</p>\n</blockquote>",
+    "categories": ["生活记录", "折腾"],
+    "tags": ["家庭实验室", "Proxmox", "Docker", "NAS", "自动化"]
+  }
+]

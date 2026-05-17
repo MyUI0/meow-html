@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>主题编辑器 - Meow 静态博客</title>
+  <link rel="icon" href="assets/images/Hexo-Theme-MEOW.ico">
+  <style>
+    /* ========== 基础样式 ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary-color: #ffb347;
+      --bg-color: #f5f5f5;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --text-secondary: #666666;
+      --border-color: #e0e0e0;
+      --shadow: 0 2px 8px rgba(0,0,0,0.1);
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    /* ========== 顶部导航 ========== */
+    .header {
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .back-btn {
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.3s;
+    }
+
+    .back-btn:hover {
+      color: var(--primary-color);
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-color);
+    }
+
+    /* ========== 标签页 ========== */
+    .tabs {
+      display: flex;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 24px;
+    }
+
+    .tab {
+      padding: 14px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+    }
+
+    .tab:hover {
+      color: var(--primary-color);
+    }
+
+    .tab.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+
+    /* ========== 主内容区 ========== */
+    .main-container {
+      display: flex;
+      height: calc(100vh - 110px);
+    }
+
+    .editor-panel {
+      width: 400px;
+      background: var(--card-bg);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .preview-panel {
+      flex: 1;
+      padding: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .preview-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .preview-mode-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mode-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .mode-btn.active {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .preview-frame {
+      flex: 1;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background: white;
+      overflow: hidden;
+    }
+
+    .preview-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* ========== 设置项样式 ========== */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .setting-group {
+      margin-bottom: 24px;
+    }
+
+    .setting-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-color);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .setting-item {
+      margin-bottom: 16px;
+    }
+
+    .setting-label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .color-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="color"] {
+      width: 50px;
+      height: 36px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      cursor: pointer;
+      padding: 2px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: monospace;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      -webkit-appearance: none;
+      background: var(--border-color);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .range-value {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      min-width: 40px;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 16px;
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .radio-item input[type="radio"] {
+      cursor: pointer;
+    }
+
+    /* ========== CSS源码编辑器 ========== */
+    .css-editor {
+      width: 100%;
+      height: 400px;
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background: #1e1e1e;
+      color: #d4d4d4;
+      resize: vertical;
+      tab-size: 2;
+    }
+
+    .css-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    /* ========== 提示消息 ========== */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      background: #333;
+      color: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ========== 响应式 ========== */
+    @media (max-width: 1024px) {
+      .main-container {
+        flex-direction: column;
+      }
+
+      .editor-panel {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        max-height: 50vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <div class="header-left">
+      <a href="index.html" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        返回博客
+      </a>
+      <h1 class="header-title">主题编辑器</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="resetTheme()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/>
+        </svg>
+        重置
+      </button>
+      <button class="btn btn-primary" onclick="saveTheme()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        保存主题
+      </button>
+      <button class="btn btn-primary" onclick="downloadCSS()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        下载CSS
+      </button>
+    </div>
+  </header>
+
+  <!-- 标签页 -->
+  <div class="tabs">
+    <div class="tab active" data-tab="colors">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 2a10 10 0 0 1 10 10"/>
+        <path d="M12 12l4-4"/>
+      </svg>
+      颜色设置
+    </div>
+    <div class="tab" data-tab="layout">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <path d="M3 9h18"/>
+        <path d="M9 21V9"/>
+      </svg>
+      布局设置
+    </div>
+    <div class="tab" data-tab="typography">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="4 7 4 4 20 4 20 7"/>
+        <line x1="9" y1="20" x2="15" y2="20"/>
+        <line x1="12" y1="4" x2="12" y2="20"/>
+      </svg>
+      字体设置
+    </div>
+    <div class="tab" data-tab="css">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="16 18 22 12 16 6"/>
+        <polyline points="8 6 2 12 8 18"/>
+      </svg>
+      CSS源码
+    </div>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="main-container">
+    <!-- 编辑器面板 -->
+    <div class="editor-panel">
+      <!-- 颜色设置 -->
+      <div class="tab-content active" id="tab-colors">
+        <div class="setting-group">
+          <div class="setting-title">主题色</div>
+          <div class="setting-item">
+            <label class="setting-label">浅色模式主题色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="theme-color-light" value="#ffb347">
+              <input type="text" id="theme-color-light-text" value="#ffb347">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">深色模式主题色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="theme-color-dark" value="#88c0ed">
+              <input type="text" id="theme-color-dark-text" value="#88c0ed">
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-title">背景色</div>
+          <div class="setting-item">
+            <label class="setting-label">浅色背景</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="bg-light" value="#ffffff">
+              <input type="text" id="bg-light-text" value="#ffffff">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">浅色次背景</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="bg-secondary-light" value="#f5f5f5">
+              <input type="text" id="bg-secondary-light-text" value="#f5f5f5">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">深色背景</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="bg-dark" value="#2d2d2d">
+              <input type="text" id="bg-dark-text" value="#2d2d2d">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">深色次背景</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="bg-secondary-dark" value="#373737">
+              <input type="text" id="bg-secondary-dark-text" value="#373737">
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-title">文字颜色</div>
+          <div class="setting-item">
+            <label class="setting-label">浅色文字</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="text-light" value="#373737">
+              <input type="text" id="text-light-text" value="#373737">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">浅色次要文字</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="text-secondary-light" value="#737373">
+              <input type="text" id="text-secondary-light-text" value="#737373">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">深色文字</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="text-dark" value="#bebec6">
+              <input type="text" id="text-dark-text" value="#bebec6">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">深色次要文字</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="text-secondary-dark" value="#8a8a8a">
+              <input type="text" id="text-secondary-dark-text" value="#8a8a8a">
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-title">链接与代码</div>
+          <div class="setting-item">
+            <label class="setting-label">浅色链接色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="link-light" value="#ffb347">
+              <input type="text" id="link-light-text" value="#ffb347">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">深色链接色</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="link-dark" value="#88c0ed">
+              <input type="text" id="link-dark-text" value="#88c0ed">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">代码块背景（浅色）</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="code-bg-light" value="#f1f1f1">
+              <input type="text" id="code-bg-light-text" value="#f1f1f1">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">代码块背景（深色）</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="code-bg-dark" value="#1a1a1a">
+              <input type="text" id="code-bg-dark-text" value="#1a1a1a">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 布局设置 -->
+      <div class="tab-content" id="tab-layout">
+        <div class="setting-group">
+          <div class="setting-title">侧边栏位置</div>
+          <div class="setting-item">
+            <div class="radio-group">
+              <label class="radio-item">
+                <input type="radio" name="sidebar-position" value="left" checked>
+                <span>左侧</span>
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="sidebar-position" value="right">
+                <span>右侧</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-title">尺寸设置</div>
+          <div class="setting-item">
+            <label class="setting-label">侧边栏宽度 <span class="range-value" id="sidebar-width-value">280px</span></label>
+            <input type="range" id="sidebar-width" min="200" max="400" value="280">
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">内容最大宽度 <span class="range-value" id="content-max-width-value">1200px</span></label>
+            <input type="range" id="content-max-width" min="800" max="1600" value="1200" step="50">
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">卡片圆角 <span class="range-value" id="card-radius-value">12px</span></label>
+            <input type="range" id="card-radius" min="0" max="24" value="12">
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">基础间距 <span class="range-value" id="spacing-unit-value">8px</span></label>
+            <input type="range" id="spacing-unit" min="4" max="16" value="8">
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">内容内边距 <span class="range-value" id="content-padding-value">24px</span></label>
+            <input type="range" id="content-padding" min="8" max="48" value="24">
+          </div>
+        </div>
+      </div>
+
+      <!-- 字体设置 -->
+      <div class="tab-content" id="tab-typography">
+        <div class="setting-group">
+          <div class="setting-title">基础字体</div>
+          <div class="setting-item">
+            <label class="setting-label">基础字体大小 <span class="range-value" id="font-size-base-value">16px</span></label>
+            <input type="range" id="font-size-base" min="12" max="20" value="16">
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">行高 <span class="range-value" id="line-height-value">1.7</span></label>
+            <input type="range" id="line-height" min="1.2" max="2.0" value="1.7" step="0.1">
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-title">标题字体大小</div>
+          <div class="setting-item">
+            <label class="setting-label">H1 <span class="range-value" id="h1-size-value">2.0em</span></label>
+            <input type="range" id="h1-size" min="1.5" max="3.0" value="2.0" step="0.1">
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">H2 <span class="range-value" id="h2-size-value">1.75em</span></label>
+            <input type="range" id="h2-size" min="1.3" max="2.5" value="1.75" step="0.05">
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">H3 <span class="range-value" id="h3-size-value">1.5em</span></label>
+            <input type="range" id="h3-size" min="1.1" max="2.0" value="1.5" step="0.05">
+          </div>
+          <div class="setting-item">
+            <label class="setting-label">H4 <span class="range-value" id="h4-size-value">1.25em</span></label>
+            <input type="range" id="h4-size" min="1.0" max="1.8" value="1.25" step="0.05">
+          </div>
+        </div>
+      </div>
+
+      <!-- CSS源码 -->
+      <div class="tab-content" id="tab-css">
+        <div class="setting-group">
+          <div class="setting-title">生成的CSS变量</div>
+          <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+            您可以直接编辑CSS代码，修改后会实时预览。点击"应用"按钮保存更改。
+          </p>
+          <textarea class="css-editor" id="css-editor" spellcheck="false"></textarea>
+          <div class="css-actions">
+            <button class="btn btn-primary" onclick="applyCustomCSS()">应用CSS</button>
+            <button class="btn btn-secondary" onclick="generateCSS()">重新生成</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 预览面板 -->
+    <div class="preview-panel">
+      <div class="preview-header">
+        <span class="preview-title">实时预览</span>
+        <div class="preview-mode-toggle">
+          <button class="mode-btn active" data-mode="light" onclick="setPreviewMode('light')">浅色</button>
+          <button class="mode-btn" data-mode="dark" onclick="setPreviewMode('dark')">深色</button>
+        </div>
+      </div>
+      <div class="preview-frame">
+        <iframe id="preview-frame" src="preview.html"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- 提示消息 -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // 默认主题配置
+    const defaultTheme = {
+      // 主题色
+      'theme-color-light': '#ffb347',
+      'theme-color-dark': '#88c0ed',
+      // 背景色
+      'bg-light': '#ffffff',
+      'bg-secondary-light': '#f5f5f5',
+      'bg-dark': '#2d2d2d',
+      'bg-secondary-dark': '#373737',
+      // 文字颜色
+      'text-light': '#373737',
+      'text-secondary-light': '#737373',
+      'text-dark': '#bebec6',
+      'text-secondary-dark': '#8a8a8a',
+      // 链接与代码
+      'link-light': '#ffb347',
+      'link-dark': '#88c0ed',
+      'code-bg-light': '#f1f1f1',
+      'code-bg-dark': '#1a1a1a',
+      // 布局
+      'sidebar-position': 'left',
+      'sidebar-width': 280,
+      'content-max-width': 1200,
+      'card-radius': 12,
+      'spacing-unit': 8,
+      'content-padding': 24,
+      // 字体
+      'font-size-base': 16,
+      'line-height': 1.7,
+      'h1-size': 2.0,
+      'h2-size': 1.75,
+      'h3-size': 1.5,
+      'h4-size': 1.25
+    };
+
+    // 当前主题配置
+    let currentTheme = { ...defaultTheme };
+    let customCSSCode = '';
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      loadTheme();
+      initEventListeners();
+      updatePreview();
+      generateCSS();
+    });
+
+    // 初始化事件监听
+    function initEventListeners() {
+      // 标签页切换
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.dataset.tab;
+          switchTab(tabId);
+        });
+      });
+
+      // 颜色输入同步
+      const colorInputs = [
+        'theme-color-light', 'theme-color-dark',
+        'bg-light', 'bg-secondary-light', 'bg-dark', 'bg-secondary-dark',
+        'text-light', 'text-secondary-light', 'text-dark', 'text-secondary-dark',
+        'link-light', 'link-dark', 'code-bg-light', 'code-bg-dark'
+      ];
+
+      colorInputs.forEach(id => {
+        const colorInput = document.getElementById(id);
+        const textInput = document.getElementById(id + '-text');
+        
+        if (colorInput && textInput) {
+          colorInput.addEventListener('input', function() {
+            textInput.value = this.value;
+            currentTheme[id] = this.value;
+            updatePreview();
+            generateCSS();
+          });
+          
+          textInput.addEventListener('change', function() {
+            if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+              colorInput.value = this.value;
+              currentTheme[id] = this.value;
+              updatePreview();
+              generateCSS();
+            }
+          });
+        }
+      });
+
+      // 滑块输入
+      const rangeInputs = [
+        'sidebar-width', 'content-max-width', 'card-radius', 'spacing-unit', 'content-padding',
+        'font-size-base', 'line-height', 'h1-size', 'h2-size', 'h3-size', 'h4-size'
+      ];
+
+      rangeInputs.forEach(id => {
+        const input = document.getElementById(id);
+        const valueDisplay = document.getElementById(id + '-value');
+        
+        if (input) {
+          input.addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            currentTheme[id] = value;
+            
+            let displayValue = value;
+            let unit = '';
+            
+            if (id === 'line-height') {
+              unit = '';
+            } else if (id.includes('size') && id !== 'font-size-base') {
+              unit = 'em';
+            } else {
+              unit = 'px';
+            }
+            
+            if (valueDisplay) {
+              valueDisplay.textContent = displayValue + unit;
+            }
+            
+            updatePreview();
+            generateCSS();
+          });
+        }
+      });
+
+      // 侧边栏位置
+      document.querySelectorAll('input[name="sidebar-position"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          currentTheme['sidebar-position'] = this.value;
+          updatePreview();
+          generateCSS();
+        });
+      });
+    }
+
+    // 切换标签页
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      
+      document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+    }
+
+    // 设置预览模式
+    function setPreviewMode(mode) {
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+      
+      // 重新加载预览以应用新模式
+      updatePreview();
+    }
+
+    // 生成CSS代码
+    function generateCSS() {
+      const css = `/* Meow 主题自定义样式 - 由主题编辑器生成 */
+:root {
+  /* 主题色 */
+  --theme-color-light: ${currentTheme['theme-color-light']};
+  --theme-color-dark: ${currentTheme['theme-color-dark']};
+  
+  /* 浅色模式 */
+  --bg-light: ${currentTheme['bg-light']};
+  --bg-secondary-light: ${currentTheme['bg-secondary-light']};
+  --text-light: ${currentTheme['text-light']};
+  --text-secondary-light: ${currentTheme['text-secondary-light']};
+  --link-light: ${currentTheme['link-light']};
+  --code-bg-light: ${currentTheme['code-bg-light']};
+  
+  /* 深色模式 */
+  --bg-dark: ${currentTheme['bg-dark']};
+  --bg-secondary-dark: ${currentTheme['bg-secondary-dark']};
+  --text-dark: ${currentTheme['text-dark']};
+  --text-secondary-dark: ${currentTheme['text-secondary-dark']};
+  --link-dark: ${currentTheme['link-dark']};
+  --code-bg-dark: ${currentTheme['code-bg-dark']};
+  
+  /* 布局 */
+  --sidebar-position: ${currentTheme['sidebar-position']};
+  --sidebar-width: ${currentTheme['sidebar-width']}px;
+  --content-max-width: ${currentTheme['content-max-width']}px;
+  --card-radius: ${currentTheme['card-radius']}px;
+  --spacing-unit: ${currentTheme['spacing-unit']}px;
+  --content-padding: ${currentTheme['content-padding']}px;
+  
+  /* 字体 */
+  --font-size-base: ${currentTheme['font-size-base']}px;
+  --line-height: ${currentTheme['line-height']};
+  --h1-size: ${currentTheme['h1-size']}em;
+  --h2-size: ${currentTheme['h2-size']}em;
+  --h3-size: ${currentTheme['h3-size']}em;
+  --h4-size: ${currentTheme['h4-size']}em;
+}
+
+/* 侧边栏位置 */
+body[data-sidebar='right'] .home-main {
+  flex-direction: row-reverse;
+}
+
+body[data-sidebar='right'] .home-sidebar {
+  order: 1;
+}
+
+body[data-sidebar='right'] .home-article-list {
+  order: 0;
+}
+
+/* 应用字体设置 */
+body {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height);
+}
+
+h1 { font-size: var(--h1-size); }
+h2 { font-size: var(--h2-size); }
+h3 { font-size: var(--h3-size); }
+h4 { font-size: var(--h4-size); }
+`;
+
+      customCSSCode = css;
+      document.getElementById('css-editor').value = css;
+      return css;
+    }
+
+    // 应用自定义CSS
+    function applyCustomCSS() {
+      customCSSCode = document.getElementById('css-editor').value;
+      updatePreview();
+      showToast('CSS已应用');
+    }
+
+    // 更新预览 - 通过URL参数传递配置
+    function updatePreview() {
+      const iframe = document.getElementById('preview-frame');
+      
+      // 构建URL参数
+      const params = new URLSearchParams();
+      params.set('themeColorLight', currentTheme['theme-color-light']);
+      params.set('themeColorDark', currentTheme['theme-color-dark']);
+      params.set('bgLight', currentTheme['bg-light']);
+      params.set('bgDark', currentTheme['bg-dark']);
+      params.set('textLight', currentTheme['text-light']);
+      params.set('textDark', currentTheme['text-dark']);
+      params.set('sidebarPosition', currentTheme['sidebar-position']);
+      params.set('sidebarWidth', currentTheme['sidebar-width'] + 'px');
+      params.set('contentMaxWidth', currentTheme['content-max-width'] + 'px');
+      params.set('cardRadius', currentTheme['card-radius']);
+      params.set('spacingUnit', currentTheme['spacing-unit']);
+      params.set('fontBase', currentTheme['font-size-base']);
+      params.set('lineHeight', currentTheme['line-height']);
+      
+      // 获取当前预览模式
+      const activeMode = document.querySelector('.mode-btn.active');
+      if (activeMode) {
+        params.set('colorMode', activeMode.dataset.mode);
+      }
+      
+      // 重新加载iframe（带参数）
+      iframe.src = 'preview.html?' + params.toString();
+    }
+
+    // 应用主题到iframe（备用方法，如果iframe已加载）
+    function applyThemeToIframe(iframe) {
+      // 现在通过URL参数传递，此方法作为备用
+      const doc = iframe.contentDocument;
+      if (!doc) return;
+      
+      // 应用当前预览模式
+      const activeMode = document.querySelector('.mode-btn.active');
+      if (activeMode && doc.body) {
+        doc.body.setAttribute('data-mode', activeMode.dataset.mode);
+      }
+    }
+
+    // 保存主题
+    function saveTheme() {
+      localStorage.setItem('meow-theme-config', JSON.stringify(currentTheme));
+      localStorage.setItem('meow-theme-css', customCSSCode || generateCSS());
+      showToast('主题已保存到本地存储');
+    }
+
+    // 加载主题
+    function loadTheme() {
+      const saved = localStorage.getItem('meow-theme-config');
+      if (saved) {
+        try {
+          const config = JSON.parse(saved);
+          currentTheme = { ...defaultTheme, ...config };
+          
+          // 应用保存的值到表单
+          applyThemeToForm();
+          
+          // 加载保存的CSS
+          const savedCSS = localStorage.getItem('meow-theme-css');
+          if (savedCSS) {
+            customCSSCode = savedCSS;
+            document.getElementById('css-editor').value = savedCSS;
+          }
+        } catch (e) {
+          console.error('加载主题失败:', e);
+        }
+      }
+    }
+
+    // 应用主题值到表单
+    function applyThemeToForm() {
+      // 颜色输入
+      const colorInputs = [
+        'theme-color-light', 'theme-color-dark',
+        'bg-light', 'bg-secondary-light', 'bg-dark', 'bg-secondary-dark',
+        'text-light', 'text-secondary-light', 'text-dark', 'text-secondary-dark',
+        'link-light', 'link-dark', 'code-bg-light', 'code-bg-dark'
+      ];
+      
+      colorInputs.forEach(id => {
+        const colorInput = document.getElementById(id);
+        const textInput = document.getElementById(id + '-text');
+        if (colorInput && currentTheme[id]) {
+          colorInput.value = currentTheme[id];
+          if (textInput) textInput.value = currentTheme[id];
+        }
+      });
+      
+      // 滑块
+      const rangeInputs = [
+        'sidebar-width', 'content-max-width', 'card-radius', 'spacing-unit', 'content-padding',
+        'font-size-base', 'line-height', 'h1-size', 'h2-size', 'h3-size', 'h4-size'
+      ];
+      
+      rangeInputs.forEach(id => {
+        const input = document.getElementById(id);
+        const valueDisplay = document.getElementById(id + '-value');
+        if (input && currentTheme[id] !== undefined) {
+          input.value = currentTheme[id];
+          if (valueDisplay) {
+            let unit = '';
+            if (id === 'line-height') unit = '';
+            else if (id.includes('size') && id !== 'font-size-base') unit = 'em';
+            else unit = 'px';
+            valueDisplay.textContent = currentTheme[id] + unit;
+          }
+        }
+      });
+      
+      // 侧边栏位置
+      const sidebarRadio = document.querySelector(`input[name="sidebar-position"][value="${currentTheme['sidebar-position']}"]`);
+      if (sidebarRadio) sidebarRadio.checked = true;
+    }
+
+    // 重置主题
+    function resetTheme() {
+      if (confirm('确定要重置为默认主题吗？所有自定义设置将丢失。')) {
+        currentTheme = { ...defaultTheme };
+        customCSSCode = '';
+        applyThemeToForm();
+        generateCSS();
+        updatePreview();
+        localStorage.removeItem('meow-theme-config');
+        localStorage.removeItem('meow-theme-css');
+        showToast('主题已重置');
+      }
+    }
+
+    // 下载CSS
+    function downloadCSS() {
+      const css = customCSSCode || generateCSS();
+      const blob = new Blob([css], { type: 'text/css' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'theme.css';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('CSS文件已下载');
+    }
+
+    // 显示提示
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

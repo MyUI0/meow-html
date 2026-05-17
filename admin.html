@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章管理 | MEOW</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    /* 顶部栏 */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .topbar-left a {
+      color: #FFB347;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .topbar-left span {
+      color: #999;
+      font-size: 14px;
+    }
+
+    /* 按钮组 */
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .btn-primary { background: #FFB347; color: #fff; }
+    .btn-primary:hover { background: #ffa030; }
+    .btn-success { background: #52c41a; color: #fff; }
+    .btn-success:hover { background: #45a818; }
+    .btn-danger { background: #ff4d4f; color: #fff; }
+    .btn-danger:hover { background: #e04040; }
+    .btn-info { background: #1890ff; color: #fff; }
+    .btn-info:hover { background: #1677cc; }
+    .btn-secondary { background: #fff; color: #333; border: 1px solid #d9d9d9; }
+    .btn-secondary:hover { border-color: #FFB347; color: #FFB347; }
+
+    /* 主体布局 */
+    .main {
+      display: flex;
+      height: calc(100vh - 53px);
+    }
+
+    /* 左侧文章列表 */
+    .sidebar {
+      width: 280px;
+      min-width: 280px;
+      background: #fff;
+      border-right: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sidebar-header {
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+      color: #666;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .article-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .article-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 4px;
+      transition: all 0.15s;
+      border: 2px solid transparent;
+    }
+    .article-item:hover { background: #fff7e6; }
+    .article-item.active { background: #fff7e6; border-color: #FFB347; }
+    .article-item-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .article-item-meta {
+      font-size: 11px;
+      color: #999;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* 右侧编辑区 */
+    .editor-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* 编辑器标签页 */
+    .editor-tabs {
+      display: flex;
+      background: #fafafa;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .editor-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #666;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .editor-tab:hover { color: #FFB347; }
+    .editor-tab.active { color: #FFB347; border-bottom-color: #FFB347; font-weight: 500; }
+
+    /* 表单编辑模式 */
+    .form-editor {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: none;
+    }
+    .form-editor.active { display: block; }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .form-group label .required {
+      color: #ff4d4f;
+      margin-left: 2px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #FFB347;
+      box-shadow: 0 0 0 2px rgba(255,179,71,0.2);
+    }
+    .form-group textarea {
+      min-height: 400px;
+      resize: vertical;
+      font-family: 'Consolas', 'SF Mono', monospace;
+      line-height: 1.6;
+    }
+    .form-group .hint {
+      font-size: 11px;
+      color: #999;
+      margin-top: 4px;
+    }
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+    .form-row .form-group { flex: 1; }
+    .tag-input-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      min-height: 40px;
+      align-items: center;
+      cursor: text;
+    }
+    .tag-input-container:focus-within {
+      border-color: #FFB347;
+      box-shadow: 0 0 0 2px rgba(255,179,71,0.2);
+    }
+    .tag {
+      background: #fff7e6;
+      color: #d48806;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tag .remove {
+      cursor: pointer;
+      font-size: 14px;
+      color: #999;
+    }
+    .tag .remove:hover { color: #ff4d4f; }
+    .tag-input-container input {
+      border: none;
+      outline: none;
+      flex: 1;
+      min-width: 80px;
+      font-size: 13px;
+      padding: 2px;
+    }
+
+    /* JSON 编辑模式 */
+    .json-editor {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .json-editor.active { display: flex; }
+    .json-editor textarea {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      font-family: 'Consolas', 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+
+    /* 空状态 */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #999;
+      gap: 12px;
+    }
+    .empty-state .icon { font-size: 48px; }
+    .empty-state .text { font-size: 14px; }
+
+    /* 状态栏 */
+    .statusbar {
+      background: #fafafa;
+      border-top: 1px solid #e0e0e0;
+      padding: 6px 16px;
+      font-size: 12px;
+      color: #999;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Toast 提示 */
+    .toast {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      z-index: 1000;
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .toast.show { transform: translateX(0); }
+    .toast-success { background: #52c41a; }
+    .toast-error { background: #ff4d4f; }
+    .toast-info { background: #1890ff; }
+
+    /* 模态框 */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .modal h3 { margin-bottom: 16px; font-size: 16px; }
+    .modal p { color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; min-width: unset; max-height: 200px; }
+      .main { flex-direction: column; }
+      .form-row { flex-direction: column; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 顶部栏 -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html">← 返回博客</a>
+    <span>文章管理</span>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="newArticle()">+ 新建文章</button>
+    <button class="btn btn-secondary" onclick="openLocalFile()">📂 打开本地文件</button>
+    <button class="btn btn-success" onclick="saveToLocal()">💾 保存到本地</button>
+    <button class="btn btn-info" onclick="copyJSON()">📋 复制JSON</button>
+  </div>
+</div>
+
+<!-- 主体 -->
+<div class="main">
+  <!-- 左侧文章列表 -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span id="article-count">0 篇文章</span>
+      <button class="btn btn-danger" style="padding:4px 10px;font-size:11px;" onclick="confirmDeleteAll()">清空</button>
+    </div>
+    <div class="article-list" id="article-list">
+      <div class="empty-state" id="empty-hint">
+        <div class="icon">📝</div>
+        <div class="text">点击「打开本地文件」加载 articles.json<br>或点击「新建文章」开始创作</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧编辑区 -->
+  <div class="editor-area">
+    <!-- 标签页 -->
+    <div class="editor-tabs">
+      <div class="editor-tab active" onclick="switchTab('form')">📝 表单编辑</div>
+      <div class="editor-tab" onclick="switchTab('json')">{ } JSON 编辑</div>
+    </div>
+
+    <!-- 表单编辑 -->
+    <div class="form-editor active" id="form-editor">
+      <div class="empty-state" id="editor-empty">
+        <div class="icon">✏️</div>
+        <div class="text">从左侧选择一篇文章，或新建文章</div>
+      </div>
+      <div id="editor-form" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>文章标题 <span class="required">*</span></label>
+            <input type="text" id="f-title" placeholder="输入文章标题">
+          </div>
+          <div class="form-group">
+            <label>文章 ID <span class="required">*</span></label>
+            <input type="text" id="f-id" placeholder="英文ID，如 my-new-post">
+            <div class="hint">用于 URL，只能用英文、数字、连字符</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>发布日期</label>
+            <input type="date" id="f-date">
+          </div>
+          <div class="form-group">
+            <label>更新日期</label>
+            <input type="date" id="f-updated">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>封面图片 URL</label>
+          <input type="text" id="f-cover" placeholder="https://example.com/cover.jpg">
+          <div class="hint">留空则不显示封面，推荐使用外链图片</div>
+        </div>
+        <div class="form-group">
+          <label>文章摘要</label>
+          <input type="text" id="f-excerpt" placeholder="简短描述文章内容">
+        </div>
+        <div class="form-group">
+          <label>分类 <span class="hint">（回车添加）</span></label>
+          <div class="tag-input-container" id="cat-container" onclick="this.querySelector('input').focus()">
+            <input type="text" id="cat-input" placeholder="输入分类名后按回车" onkeydown="handleTagInput(event, 'categories')">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>标签 <span class="hint">（回车添加）</span></label>
+          <div class="tag-input-container" id="tag-container" onclick="this.querySelector('input').focus()">
+            <input type="text" id="tag-input" placeholder="输入标签名后按回车" onkeydown="handleTagInput(event, 'tags')">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>文章正文 <span class="required">*</span> <span class="hint">（支持 HTML 格式）</span></label>
+          <textarea id="f-content" placeholder="在这里写文章内容，支持 HTML 标签&#10;&#10;例如：&#10;<h2>第一章</h2>&#10;<p>这是段落内容...</p>&#10;<pre><code>代码块</code></pre>"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:8px;border-top:1px solid #f0f0f0;">
+          <button class="btn btn-secondary" onclick="previewArticle()">👁 预览</button>
+          <button class="btn btn-success" onclick="saveCurrentArticle()">✅ 保存文章</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JSON 编辑 -->
+    <div class="json-editor" id="json-editor">
+      <textarea id="json-textarea" spellcheck="false" placeholder="JSON 内容将在这里显示..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 状态栏 -->
+<div class="statusbar">
+  <span id="status-text">就绪</span>
+  <span id="status-info"></span>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 确认模态框 -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-title">确认操作</h3>
+    <p id="modal-message">确定要执行此操作吗？</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+      <button class="btn btn-danger" id="modal-confirm" onclick="closeModal()">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 隐藏的文件输入 -->
+<input type="file" id="file-input" accept=".json" style="display:none" onchange="handleFileLoad(event)">
+
+<script>
+// ===== 数据 =====
+let articles = [];
+let currentEditIndex = -1;
+let currentTags = { categories: [], tags: [] };
+
+// ===== 初始化 =====
+window.addEventListener('DOMContentLoaded', () => {
+  // 自动从服务器加载 articles.json
+  loadFromServer();
+});
+
+// 从服务器加载 articles.json
+async function loadFromServer() {
+  try {
+    const response = await fetch('content/articles.json');
+    if (!response.ok) {
+      throw new Error('HTTP ' + response.status);
+    }
+    const data = await response.json();
+    articles = Array.isArray(data) ? data : [data];
+    localStorage.setItem('meow-articles', JSON.stringify(articles));
+    renderArticleList();
+    updateJsonEditor();
+    setStatus('已加载 ' + articles.length + ' 篇文章');
+    showToast('success', '文章数据加载成功');
+  } catch(e) {
+    // 尝试从 localStorage 恢复
+    const saved = localStorage.getItem('meow-articles');
+    if (saved) {
+      try {
+        articles = JSON.parse(saved);
+        renderArticleList();
+        updateJsonEditor();
+        setStatus('从本地缓存恢复 ' + articles.length + ' 篇文章');
+        showToast('warning', '服务器加载失败，使用本地缓存');
+      } catch(err) {}
+    } else {
+      setStatus('未找到文章数据，请手动加载或新建');
+      showToast('warning', '请点击"加载"选择 articles.json 文件');
+    }
+  }
+}
+
+// ===== 文件操作 =====
+function openLocalFile() {
+  document.getElementById('file-input').click();
+}
+
+function handleFileLoad(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      articles = JSON.parse(e.target.result);
+      if (!Array.isArray(articles)) {
+        articles = [articles];
+      }
+      // 保存到 localStorage
+      localStorage.setItem('meow-articles', JSON.stringify(articles));
+      renderArticleList();
+      updateJsonEditor();
+      currentEditIndex = -1;
+      showEditorEmpty(true);
+      showToast('success', '成功加载 ' + articles.length + ' 篇文章');
+      setStatus('已加载文件: ' + file.name);
+    } catch(err) {
+      showToast('error', 'JSON 格式错误: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  // 重置 input 以便重复选择同一文件
+  event.target.value = '';
+}
+
+function saveToLocal() {
+  if (articles.length === 0) {
+    showToast('error', '没有文章可保存');
+    return;
+  }
+  // 先同步当前编辑中的文章
+  if (currentEditIndex >= 0) {
+    saveCurrentArticle(true);
+  }
+  const json = JSON.stringify(articles, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'articles.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('success', 'articles.json 已下载，请上传到路由器 /wwwcontent/ 目录');
+  setStatus('文件已下载，需上传到路由器');
+}
+
+// 保存到路由器（显示上传提示）
+function saveToRouter() {
+  if (articles.length === 0) {
+    showToast('error', '没有文章可保存');
+    return;
+  }
+  if (currentEditIndex >= 0) {
+    saveCurrentArticle(true);
+  }
+  // 先下载
+  const json = JSON.stringify(articles, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'articles.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  // 显示上传提示
+  alert('文件已下载！\n\n请通过路由器文件管理上传：\n1. 打开路由器管理页面\n2. 进入文件管理\n3. 上传 articles.json 到 /wwwcontent/\n\n或使用命令：\ncp articles.json /wwwcontent/');
+}
+
+function copyJSON() {
+  if (currentEditIndex >= 0) {
+    saveCurrentArticle(true);
+  }
+  const json = JSON.stringify(articles, null, 2);
+  navigator.clipboard.writeText(json).then(() => {
+    showToast('success', 'JSON 已复制到剪贴板');
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = json;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('success', 'JSON 已复制到剪贴板');
+  });
+}
+
+// ===== 文章列表 =====
+function renderArticleList() {
+  const list = document.getElementById('article-list');
+  const count = document.getElementById('article-count');
+  const empty = document.getElementById('empty-hint');
+
+  count.textContent = articles.length + ' 篇文章';
+
+  if (articles.length === 0) {
+    list.innerHTML = '';
+    list.appendChild(empty);
+    empty.style.display = 'flex';
+    return;
+  }
+
+  empty.style.display = 'none';
+  let html = '';
+  articles.forEach((a, i) => {
+    const active = i === currentEditIndex ? ' active' : '';
+    const cats = (a.categories || []).join(', ');
+    html += '<div class="article-item' + active + '" onclick="selectArticle(' + i + ')">';
+    html += '<div class="article-item-title">' + escapeHtml(a.title || '无标题') + '</div>';
+    html += '<div class="article-item-meta">';
+    html += '<span>' + (a.date || '无日期') + '</span>';
+    if (cats) html += '<span>' + escapeHtml(cats) + '</span>';
+    html += '</div></div>';
+  });
+  list.innerHTML = html;
+}
+
+function selectArticle(index) {
+  // 先保存当前编辑中的
+  if (currentEditIndex >= 0 && currentEditIndex !== index) {
+    saveCurrentArticle(true);
+  }
+  currentEditIndex = index;
+  const a = articles[index];
+  showEditorEmpty(false);
+
+  document.getElementById('f-title').value = a.title || '';
+  document.getElementById('f-id').value = a.id || '';
+  document.getElementById('f-date').value = a.date || '';
+  document.getElementById('f-updated').value = a.updated || '';
+  document.getElementById('f-cover').value = a.cover || '';
+  document.getElementById('f-excerpt').value = a.excerpt || '';
+  document.getElementById('f-content').value = a.content || '';
+
+  // 标签
+  currentTags.categories = [...(a.categories || [])];
+  currentTags.tags = [...(a.tags || [])];
+  renderTags('categories');
+  renderTags('tags');
+
+  renderArticleList();
+  setStatus('正在编辑: ' + a.title);
+}
+
+// ===== 标签输入 =====
+function handleTagInput(event, type) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    const input = event.target;
+    const val = input.value.trim();
+    if (val && !currentTags[type].includes(val)) {
+      currentTags[type].push(val);
+      renderTags(type);
+    }
+    input.value = '';
+  }
+}
+
+function removeTag(type, index) {
+  currentTags[type].splice(index, 1);
+  renderTags(type);
+}
+
+function renderTags(type) {
+  const containerId = type === 'categories' ? 'cat-container' : 'tag-container';
+  const container = document.getElementById(containerId);
+  const input = container.querySelector('input');
+  // 移除旧标签
+  container.querySelectorAll('.tag').forEach(t => t.remove());
+  // 添加新标签
+  currentTags[type].forEach((tag, i) => {
+    const el = document.createElement('span');
+    el.className = 'tag';
+    el.innerHTML = escapeHtml(tag) + ' <span class="remove" onclick="removeTag(\'' + type + '\',' + i + ')">×</span>';
+    container.insertBefore(el, input);
+  });
+}
+
+// ===== 文章 CRUD =====
+function newArticle() {
+  const today = new Date().toISOString().split('T')[0];
+  const article = {
+    id: 'post-' + Date.now(),
+    title: '',
+    date: today,
+    updated: today,
+    cover: '',
+    excerpt: '',
+    content: '',
+    categories: [],
+    tags: []
+  };
+  articles.unshift(article);
+  localStorage.setItem('meow-articles', JSON.stringify(articles));
+  selectArticle(0);
+  renderArticleList();
+  updateJsonEditor();
+  document.getElementById('f-title').focus();
+  showToast('info', '已创建新文章，请填写内容');
+}
+
+function saveCurrentArticle(silent) {
+  if (currentEditIndex < 0) return;
+  const a = articles[currentEditIndex];
+  a.title = document.getElementById('f-title').value.trim();
+  a.id = document.getElementById('f-id').value.trim();
+  a.date = document.getElementById('f-date').value;
+  a.updated = document.getElementById('f-updated').value;
+  a.cover = document.getElementById('f-cover').value.trim();
+  a.excerpt = document.getElementById('f-excerpt').value.trim();
+  a.content = document.getElementById('f-content').value;
+  a.categories = [...currentTags.categories];
+  a.tags = [...currentTags.tags];
+
+  localStorage.setItem('meow-articles', JSON.stringify(articles));
+  renderArticleList();
+  updateJsonEditor();
+  if (!silent) showToast('success', '文章已保存');
+}
+
+function deleteArticle(index) {
+  articles.splice(index, 1);
+  if (currentEditIndex === index) {
+    currentEditIndex = -1;
+    showEditorEmpty(true);
+  } else if (currentEditIndex > index) {
+    currentEditIndex--;
+  }
+  localStorage.setItem('meow-articles', JSON.stringify(articles));
+  renderArticleList();
+  updateJsonEditor();
+  showToast('success', '文章已删除');
+}
+
+function confirmDeleteAll() {
+  showModal('清空所有文章', '确定要删除全部 ' + articles.length + ' 篇文章吗？此操作不可撤销！', () => {
+    articles = [];
+    currentEditIndex = -1;
+    showEditorEmpty(true);
+    localStorage.setItem('meow-articles', JSON.stringify(articles));
+    renderArticleList();
+    updateJsonEditor();
+    showToast('success', '已清空所有文章');
+  });
+}
+
+// ===== 标签页切换 =====
+function switchTab(tab) {
+  document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('form-editor').classList.remove('active');
+  document.getElementById('json-editor').classList.remove('active');
+
+  if (tab === 'form') {
+    document.querySelectorAll('.editor-tab')[0].classList.add('active');
+    document.getElementById('form-editor').classList.add('active');
+  } else {
+    document.querySelectorAll('.editor-tab')[1].classList.add('active');
+    document.getElementById('json-editor').classList.add('active');
+    updateJsonEditor();
+  }
+}
+
+function updateJsonEditor() {
+  const textarea = document.getElementById('json-textarea');
+  textarea.value = JSON.stringify(articles, null, 2);
+  document.getElementById('status-info').textContent = articles.length + ' 篇文章 | ' + new Blob([textarea.value]).size + ' 字节';
+}
+
+// ===== 预览 =====
+function previewArticle() {
+  if (currentEditIndex < 0) return;
+  saveCurrentArticle(true);
+  const a = articles[currentEditIndex];
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>${escapeHtml(a.title)}</title>
+    <link rel="stylesheet" href="assets/css/style.min.css">
+    <style>body{padding:2rem;max-width:800px;margin:0 auto;background:#fff;}</style>
+    </head><body>
+    <h1>${escapeHtml(a.title)}</h1>
+    <p style="color:#999">${a.date} | ${(a.categories||[]).join(', ')}</p>
+    <hr>
+    <div class="post markdown">${a.content}</div>
+    </body></html>
+  `);
+  win.document.close();
+}
+
+// ===== UI 工具 =====
+function showEditorEmpty(show) {
+  document.getElementById('editor-empty').style.display = show ? 'flex' : 'none';
+  document.getElementById('editor-form').style.display = show ? 'none' : 'block';
+}
+
+function showToast(type, message) {
+  const toast = document.getElementById('toast');
+  toast.className = 'toast toast-' + type + ' show';
+  toast.textContent = message;
+  setTimeout(() => { toast.classList.remove('show'); }, 2500);
+}
+
+function setStatus(text) {
+  document.getElementById('status-text').textContent = text;
+}
+
+function showModal(title, message, onConfirm) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-message').textContent = message;
+  document.getElementById('modal-overlay').classList.add('show');
+  document.getElementById('modal-confirm').onclick = () => {
+    closeModal();
+    onConfirm();
+  };
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== JSON 编辑器同步 =====
+document.getElementById('json-textarea').addEventListener('input', function() {
+  try {
+    const parsed = JSON.parse(this.value);
+    if (Array.isArray(parsed)) {
+      articles = parsed;
+      localStorage.setItem('meow-articles', JSON.stringify(articles));
+      renderArticleList();
+      document.getElementById('status-info').textContent = articles.length + ' 篇文章 | ' + new Blob([this.value]).size + ' 字节';
+    }
+  } catch(e) {
+    // JSON 格式错误时不更新，等用户修正
+  }
+});
+
+// Tab 键缩进支持
+document.getElementById('json-textarea').addEventListener('keydown', function(e) {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const start = this.selectionStart;
+    const end = this.selectionEnd;
+    this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+    this.selectionStart = this.selectionEnd = start + 2;
+  }
+});
+
+// Ctrl+S 快捷保存
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    if (currentEditIndex >= 0) {
+      saveCurrentArticle();
+    } else {
+      saveToLocal();
+    }
+  }
+});
+</script>
+
+</body>
+</html>

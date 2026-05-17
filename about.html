@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="小橘猫">
+  <meta name="copyright" content="小橘猫">
+  <meta name="theme-color" content="#FFB347">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="keywords" content="博客,技术,MEOW">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="application-name" content="关于 | MEOW">
+  <meta name="apple-mobile-web-app-title" content="关于 | MEOW">
+  <meta property="og:site_name" content="MEOW">
+  <meta property="og:title" content="关于 | MEOW">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index,follow">
+  <title>关于 | MEOW</title>
+  <link rel="icon" href="assets/images/Hexo-Theme-MEOW.ico">
+  <link rel="stylesheet" href="assets/css/style.min.css">
+  <link rel="stylesheet" href="assets/css/theme-variables.css">
+  <link rel="prefetch" href="index.html">
+  <link rel="prefetch" href="archive.html">
+  <link rel="prefetch" href="tags.html">
+</head>
+<body bg-style="fixed">
+
+<header>
+  <div id="navbar">
+    <div id="nav-info">
+      <a id="site-icon" href="index.html" title="首页">
+        <img src="assets/images/Hexo-Theme-MEOW.png" alt="Logo">
+      </a>
+      <a id="site-name" href="index.html" title="首页">
+        <div>MEOW</div>
+        <img src="assets/svg/uc/uc-home.svg" class="icon" alt="home">
+      </a>
+    </div>
+    <div id="nav-menu">
+        <div class="menu-item">
+          <a href="index.html">
+            <img src="assets/svg/uc/uc-home.svg" class="icon" alt="home">
+            <span>首页</span>
+          </a>
+        </div>
+        <div class="menu-item">
+          <a href="archive.html">
+            <img src="assets/svg/uc/uc-archive.svg" class="icon" alt="archive">
+            <span>归档</span>
+          </a>
+        </div>
+        <div class="menu-item">
+          <a href="categories.html">
+            <img src="assets/svg/uc/uc-category.svg" class="icon" alt="category">
+            <span>分类</span>
+          </a>
+        </div>
+        <div class="menu-item">
+          <a href="tags.html">
+            <img src="assets/svg/uc/uc-tag.svg" class="icon" alt="tag">
+            <span>标签</span>
+          </a>
+        </div>
+        <div class="menu-item active">
+          <a href="about.html">
+            <img src="assets/svg/uc/uc-about.svg" class="icon" alt="about">
+            <span>关于</span>
+          </a>
+        </div>
+        <div class="menu-item">
+          <a href="admin.html">
+            <img src="assets/svg/ta/ta-write.svg" class="icon" alt="write">
+            <span>写文章</span>
+          </a>
+        </div>
+        <div class="menu-item">
+          <a href="theme-editor.html">
+            <img src="assets/svg/ta/ta-setting.svg" class="icon" alt="setting">
+            <span>主题</span>
+          </a>
+        </div>
+    </div>
+    <div id="nav-function">
+      <div id="menu-btn">
+        <a href="javascript:void(0);" title="菜单">
+          <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div id="mobile-capsule">
+      <a class="capsule-item" href="index.html"><img src="assets/svg/uc/uc-home.svg" class="icon" alt="home"><span>首页</span></a>
+      <a class="capsule-item" href="archive.html"><img src="assets/svg/uc/uc-archive.svg" class="icon" alt="archive"><span>归档</span></a>
+      <a class="capsule-item" href="categories.html"><img src="assets/svg/uc/uc-category.svg" class="icon" alt="category"><span>分类</span></a>
+      <a class="capsule-item" href="tags.html"><img src="assets/svg/uc/uc-tag.svg" class="icon" alt="tag"><span>标签</span></a>
+      <a class="capsule-item active" href="about.html"><img src="assets/svg/uc/uc-about.svg" class="icon" alt="about"><span>关于</span></a>
+      <div class="capsule-divider"></div>
+      <a class="capsule-item" href="admin.html"><img src="assets/svg/ta/ta-write.svg" class="icon" alt="write"><span>写文章</span></a>
+      <a class="capsule-item" href="theme-editor.html"><img src="assets/svg/ta/ta-setting.svg" class="icon" alt="setting"><span>主题</span></a>
+    </div>
+  </div>
+
+  <div id="menu-overlay"></div>
+</header>
+
+<main>
+  <div class="banner">
+    <div class="banner-info">
+      <div class="banner-avatar">
+        <img src="assets/images/Hexo-Theme-MEOW.png" alt="Avatar">
+      </div>
+      <div class="banner-title">关于</div>
+    </div>
+  </div>
+
+  <div class="page-container">
+    <div class="page-content">
+      <div class="page-title">
+        <div class="page-title-content">
+          <h1>关于我</h1>
+        </div>
+      </div>
+      <div class="page-main">
+        <div class="post markdown" id="about-content">
+          <!-- 关于内容从 config.json 加载 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toolbar" hide="">
+  <div id="toolbar-setting-container" hide="">
+        <div class="toolbar-item">
+          <button id="tool-color-mode" title="切换暗色模式" type="button">
+            <img src="assets/svg/ta/ta-moon.svg" class="icon" alt="moon">
+          </button>
+        </div>
+        <div class="toolbar-item">
+          <button id="tool-share" class="copy-text" title="分享" type="button" data-text="">
+            <img src="assets/svg/ta/ta-share.svg" class="icon" alt="share">
+          </button>
+        </div></div>
+  <div class="toolbar-container">
+      <div class="toolbar-item">
+        <button id="tool-setting" title="设置" type="button">
+          <img src="assets/svg/uc/uc-setting.svg" class="icon" alt="setting">
+        </button>
+      </div>
+    <div class="toolbar-item">
+      <button id="tool-gototop" title="回到顶部" type="button">
+        <img src="assets/svg/uc/uc-up.svg" class="icon" alt="up">
+      </button>
+    </div></div>
+</div>
+</main>
+
+<footer>
+  <div class="footer">
+    <div id="footer-copyright">
+      © 2024 - 2026 <span>💗</span>
+      <a href="#">小橘猫</a>
+    </div>
+    <div id="footer-info">
+      <div id="footer-framework">
+        使用 <a href="https://github.com/chanwj/hexo-theme-meow" target="_blank">Meow</a> 主题构建
+      </div>
+      <div id="footer-runtime">
+        <span id="runtime" data-startdate="">本站已运行 .年.月.天</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var GLOBALCONFIG = {
+    root: './',
+    toolbar: true,
+    lazyload_src: 'assets/images/Meow-Loading.webp',
+    friends: false,
+    album: '',
+    codeblock: false,
+    code_copy_text: false,
+    share_text: '🐱Share From Meow',
+    onblur_title: 'Please Come Back～✧(´▽`ʃ♡ƪ)',
+    mouse_click: false,
+    notify: {
+      enable: false,
+      info: '已复制到剪贴板',
+      f12_info: '请尊重原创，不要抄袭代码哦～'
+    },
+    search: { enable: false, path: '', local: { top_n_per_article: 1, preload: false } },
+    encrypt: false,
+    category: false,
+    site_name: 'MEOW'
+  };
+
+  if (!localStorage.getItem('color-mode')) {
+    localStorage.setItem('color-mode', 'light');
+  }
+  document.body.setAttribute('data-mode', localStorage.getItem('color-mode'));
+</script>
+<script>
+function loadConfig(callback) {
+  function tryLoad(path) {
+    var s = document.createElement('script');
+    s.src = path;
+    s.onload = function() { if (callback) callback(window.__site_config); };
+    s.onerror = function() { if (callback) callback(null); };
+    document.head.appendChild(s);
+  }
+  tryLoad('./content/config.js');
+}
+loadConfig(function(config) {
+  if (config && config.start_date) {
+    var rt = document.getElementById('runtime');
+    if (rt) rt.setAttribute('data-startdate', config.start_date);
+  }
+});
+</script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/lazyload.min.js"></script>
+<script src="assets/js/view-image.min.js"></script>
+
+<script>
+// 从 config.js 加载关于页面内容
+loadConfig(function(config) {
+  if (!config) {
+    document.getElementById('about-content').innerHTML = '<p>加载关于页面失败</p>';
+    return;
+  }
+  var about = config.about || {};
+  var html = '';
+
+  // 个人简介
+  if (about.avatar) {
+    html += '<div style="text-align:center;margin-bottom:1.5rem">';
+    html += '<img src="' + about.avatar + '" alt="头像" style="width:120px;height:120px;border-radius:50%;object-fit:cover">';
+    html += '</div>';
+  }
+
+  if (about.name) {
+    html += '<h2 style="text-align:center">' + about.name + '</h2>';
+  }
+
+  if (about.bio) {
+    html += '<p style="text-align:center;color:var(--font-color-secondary)">' + about.bio + '</p>';
+  }
+
+  // 详细介绍（支持 HTML）
+  if (about.content) {
+    html += about.content;
+  }
+
+  // 技能/标签
+  if (about.skills && about.skills.length > 0) {
+    html += '<h3>技能</h3><ul>';
+    about.skills.forEach(function(s) { html += '<li>' + s + '</li>'; });
+    html += '</ul>';
+  }
+
+  // 社交链接
+  if (about.social && Object.keys(about.social).length > 0) {
+    html += '<h3>联系方式</h3><ul>';
+    Object.keys(about.social).forEach(function(name) {
+      var url = about.social[name];
+      html += '<li><a href="' + url + '" target="_blank">' + name + '</a></li>';
+    });
+    html += '</ul>';
+  }
+
+  document.getElementById('about-content').innerHTML = html;
+});
+</script>
+
+<!-- Live2D 看板娘 -->
+<link href="assets/pio/pio.css" rel="stylesheet" type="text/css"/>
+<div class="pio-container left">
+    <div class="pio-action"></div>
+    <canvas id="pio" width="280" height="320"></canvas>
+</div>
+<script src="assets/pio/l2d.js"></script>
+<script src="assets/pio/pio.js"></script>
+<script>
+var pio = new Paul_Pio({
+    "mode": "fixed",
+    "hidden": true,
+    "content": {
+        "welcome": ["欢迎来到 MEOW 博客！", "今天也要元气满满哦~", "有什么想看的文章吗？"],
+        "touch": ["你在干什么？", "别碰我！", "喵喵喵~"],
+        "skin": ["想看看我的新衣服吗？", "新衣服真漂亮~"],
+        "home": "点击这里回到首页！",
+        "close": "下次再见吧~"
+    },
+    "model": ["assets/pio/models/pio/model.json"]
+});
+</script>
+</body>
+</html>

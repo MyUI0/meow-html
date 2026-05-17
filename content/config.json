@@ -1,0 +1,106 @@
+{
+  "site_title": "MEOW",
+  "site_subtitle": "A Cute Static Blog",
+  "author": "小橘猫",
+  "description": "一个基于 Meow 主题的纯静态博客",
+  "start_date": "2024-04-02T22:16:20",
+  "language": "zh-CN",
+  "root": "./",
+  "theme_color_light": "#FFB347",
+  "theme_color_dark": "#88C0ED",
+  "default_mode": "light",
+  "icon_type": "uc",
+  "banner": {
+    "title": "「 MEOW 」",
+    "subtitle": ["一个简洁的静态博客", "记录技术与生活", "欢迎来到我的小站"],
+    "subtitle_enable": true,
+    "subtitle_effect": true,
+    "image_light": "https://picsum.photos/1920/1080?random=1",
+    "image_dark": "https://picsum.photos/1920/1080?random=2",
+    "is_fixed": true,
+    "position": "center top",
+    "repeat": "no-repeat",
+    "avatar_type": "site",
+    "title_color_light": "#fff",
+    "title_color_dark": "#e0e0e0"
+  },
+  "menu": [
+    {"name": "首页", "path": "index.html", "icon": "uc-home"},
+    {"name": "归档", "path": "archive.html", "icon": "uc-archive"},
+    {"name": "分类", "path": "categories.html", "icon": "uc-category"},
+    {"name": "标签", "path": "tags.html", "icon": "uc-tag"},
+    {"name": "关于", "path": "about.html", "icon": "uc-about"}
+  ],
+  "sidebar": {
+    "enable": true,
+    "position": "left",
+    "show_on_small_screen": true,
+    "info": {
+      "enable": true,
+      "type": "site",
+      "status_emoji": "🐱",
+      "status_desc": "正在写代码...",
+      "desc": "一个热爱技术的开发者",
+      "statistic": true,
+      "social_enable": false
+    },
+    "announcement": "欢迎访问我的博客！这里记录了我的技术学习和生活感悟。",
+    "categories_enable": true,
+    "tags_enable": true
+  },
+  "footer": {
+    "icon": "💗",
+    "author_link": "",
+    "runtime": true,
+    "framework_text": "使用 <a href=\"https://github.com/chanwj/hexo-theme-meow\" target=\"_blank\">Meow</a> 主题构建"
+  },
+  "toolbar": {
+    "enable": true,
+    "setting_enable": true,
+    "color_mode": true,
+    "font_size_setting": true,
+    "share": true
+  },
+  "post": {
+    "font_size": "17px",
+    "toc_enable": true,
+    "toc_show": true,
+    "toc_number": false,
+    "toc_max_depth": 3,
+    "copyright_enable": true,
+    "copyright_type": 1,
+    "copyright_license": "CC BY-NC-SA 4.0",
+    "copyright_license_link": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "copyright_license_desc": "署名-非商业性使用-相同方式共享",
+    "tail_tags": true,
+    "navigator": true,
+    "progress_bar": true,
+    "excerpt_length": 200
+  },
+  "code": {
+    "func": true,
+    "copy_with_text": false,
+    "max_height": "22em"
+  },
+  "image": {
+    "rounded_corners": true,
+    "loading_image": "assets/images/Meow-Loading.webp"
+  },
+  "share": {
+    "notify": false,
+    "share_text": "🐱Share From Meow"
+  },
+  "onblur_title": "Please Come Back～✧(´▽`ʃ♡ƪ)",
+  "about": {
+    "avatar": "https://picsum.photos/200/200?random=99",
+    "name": "小橘猫",
+    "bio": "一个热爱技术的开发者 🐱",
+    "content": "<h3>你好！</h3><p>欢迎来到我的博客。我是一名技术爱好者，喜欢折腾各种有趣的东西。</p><p>这个博客使用纯静态 HTML 构建，部署在路由器上，记录我的技术学习和生活感悟。</p>",
+    "skills": ["Linux / OpenWrt", "Docker / 容器化", "网络运维", "前端开发", "Python / Shell"],
+    "social": {
+      "GitHub": "https://github.com",
+      "Email": "mailto:example@example.com",
+      "RSS": "index.html"
+    }
+  }
+}
